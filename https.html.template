@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Document</title>
+</head>
+<body>
+    <h1>HTTPS template </h1>
+    
+    <script>
+        console.log("HTTPS template loaded successfully!");
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            color: #333;
+        }
+        h1 {
+            color: #4CAF50;
+        }
+        p {
+            font-size: 16px;
+        }
+        script {
+            display: none; /* Hide script tags in the rendered HTML */
+        }
+        style {
+            display: none; /* Hide style tags in the rendered HTML */
+        }
+    </style>
+</body>
+</html>

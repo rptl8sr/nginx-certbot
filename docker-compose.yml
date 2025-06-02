@@ -1,0 +1,38 @@
+services:
+  nginx:
+    image: ${NGINX_IMAGE:-nginx:latest}
+    container_name: ${NGINX_CONTAINER:-nginx}
+    ports:
+      - "${NGINX_HTTP_PORT:-80}:80"
+      - "${NGINX_HTTPS_PORT:-443}:443"
+    volumes:
+      - ./${NGINX_DEFAULT_CONFIG:-nginx.conf.template}:/etc/nginx/nginx.conf # file
+      - ./${NGINX_DEFAULT_TEMPLATE:-default.conf.template}:/etc/nginx/templates/${NGINX_DEFAULT_TEMPLATE:-default.conf.template} # file
+      - ./${LETSENCRYPT_FOLDER:-letsencrypt}:/etc/letsencrypt # dir
+      - ./${HTML_FOLDER:-html}:/var/www/html # dir
+    environment:
+      DOMAIN_NAME: ${DOMAIN_NAME}
+    restart: unless-stopped
+    networks:
+      - web
+
+  certbot:
+    image: ${CERTBOT_IMAGE:-certbot/certbot:latest}
+    container_name: ${CERTBOT_CONTAINER:-certbot}
+    volumes:
+      - ./${LETSENCRYPT_FOLDER:-letsencrypt}:/etc/letsencrypt
+      - ./${HTML_FOLDER:-html}:/var/www/html
+    environment:
+      DOMAIN_NAME: ${DOMAIN_NAME}
+      EMAIL: ${EMAIL}
+    entrypoint: [ "/bin/sh" ]
+    command: [ "-c", "echo '0 0,12 * * * certbot renew --quiet' > /etc/crontabs/root && exec crond -f" ]
+    depends_on:
+      - nginx
+    restart: unless-stopped
+    networks:
+      - web
+
+networks:
+  web:
+    driver: bridge
