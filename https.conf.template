@@ -54,6 +54,9 @@ server {
     # SSL certificate paths
     ssl_certificate /etc/letsencrypt/live/${DOMAIN_NAME}/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/${DOMAIN_NAME}/privkey.pem;
+    ssl_stapling on;
+    ssl_stapling_verify on;
+    ssl_trusted_certificate /etc/letsencrypt/live/${DOMAIN_NAME}/chain.pem; # Make sure this path is correct
 
     # SSL optimization
     ssl_session_timeout 1d;
@@ -68,16 +71,14 @@ server {
     add_header X-Content-Type-Options nosniff always;
     add_header X-Frame-Options DENY always;
     add_header X-XSS-Protection "1; mode=block" always;
+    add_header Cross-Origin-Resource-Policy "same-origin" always;
+    add_header Referrer-Policy "no-referrer-when-downgrade" always;
 
     # Hide nginx version
     server_tokens off;
 
     # Limit request size (optional, for security)
     client_max_body_size 10M;
-
-    # Optionally enable CORS or CORP if needed
-    # add_header Cross-Origin-Resource-Policy "same-origin" always;
-    # add_header Access-Control-Allow-Origin "*" always;
 
     # Main location block
     location / {
