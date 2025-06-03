@@ -54,6 +54,7 @@ init-production: init-http
 			--webroot \
 			--webroot-path /var/www/html \
 			--email $(EMAIL) \
+			--force-renewal \
 			--agree-tos \
 			--no-eff-email \
 			--non-interactive \
