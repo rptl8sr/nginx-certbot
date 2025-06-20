@@ -12,7 +12,7 @@ services:
       - ./${HTML_FOLDER:-html}:/var/www/html # dir
     environment:
       DOMAIN_NAME: ${DOMAIN_NAME}
-    restart: unless-stopped
+    restart: no
     networks:
       - web
 
@@ -29,7 +29,7 @@ services:
     command: [ "-c", "echo '0 0,12 * * * certbot renew --quiet' > /etc/crontabs/root && exec crond -f" ]
     depends_on:
       - nginx
-    restart: unless-stopped
+    restart: no
     networks:
       - web
 

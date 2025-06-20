@@ -12,7 +12,7 @@ $(foreach var,$(REQUIRED_VARS),$(if $($(var)),,$(error $(var) is not set in .env
 COMPOSE := docker compose --env-file .env
 
 # Phony targets
-.PHONY: init-http init-staging init-production init start stop logs-nginx logs-certbot exec-nginx exec-certbot clear remote-deploy curl-http curl-https
+.PHONY: init-http init-staging init-production init start stop restart logs-nginx logs-certbot exec-nginx exec-certbot clear remote-deploy curl-http curl-https
 
 init: init-staging init-production start
 
@@ -77,6 +77,8 @@ init-production: init-http
 
 start:
 	@echo "Starting Nginx with current configuration..."
+	@cp $(NGINX_HTTPS_TEMPLATE) $(NGINX_DEFAULT_TEMPLATE)
+	@cp $(HTML_HTTPS_TEMPLATE) $(HTML_DEFAULT_TEMPLATE)
 	@$(COMPOSE) up -d
 	@echo "Nginx & Certbot started successfully."
 
@@ -84,6 +86,9 @@ stop:
 	@echo "Stopping Nginx..."
 	@$(COMPOSE) down
 	@echo "Nginx stopped successfully."
+
+restart: stop start
+	@echo "Nginx restarted successfully."
 
 logs-nginx:
 	@echo "Fetching Nginx logs..."
@@ -94,6 +99,7 @@ logs-certbot:
 	@echo "Fetching Certbot logs..."
 	@$(COMPOSE) logs $(CERTBOT_CONTAINER)
 	@echo "Certbot logs fetched."
+
 
 exec-nginx:
 	@echo "Executing shell in Nginx container..."
